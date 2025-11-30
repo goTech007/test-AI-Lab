@@ -1,15 +1,9 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import type { LogEntry } from '@/types/attentionResponse'
 
-interface LogEntry {
-  id: number
-  timestamp: string
-  message: string
-  type: 'domination' | 'adaptation' | 'conflict' | 'balance' | 'status'
-}
-
-export default function BehavioralConflictLog() {
+export default function TextLog() {
   const [logs, setLogs] = useState<LogEntry[]>([])
   const logIdRef = useRef(0)
   const logEndRef = useRef<HTMLDivElement>(null)
@@ -24,11 +18,10 @@ export default function BehavioralConflictLog() {
 
   useEffect(() => {
     const messages = [
-      { type: 'status' as const, templates: ['Zone initialized', 'Conflict protocol active', 'Models engaged'] },
-      { type: 'domination' as const, templates: ['Model A: dominance attempt', 'Model B: dominance attempt', 'Power shift detected'] },
-      { type: 'adaptation' as const, templates: ['Model A: adapting behavior', 'Model B: adapting behavior', 'Behavioral adjustment'] },
-      { type: 'conflict' as const, templates: ['Conflict escalation', 'Tug-of-war detected', 'Struggle intensifies'] },
-      { type: 'balance' as const, templates: ['Equilibrium reached', 'Balance restored', 'Conflict stabilized'] },
+      { type: 'status' as const, templates: ['System initialized', 'Models synchronized', 'Detection threshold calibrated'] },
+      { type: 'stimulus' as const, templates: ['Stimulus emitted', 'Pattern generated', 'Signal wave transmitted', 'Stimulus sequence initiated'] },
+      { type: 'detection' as const, templates: ['Model B: response detected', 'Pattern recognized', 'Signal matched', 'Detection confirmed'] },
+      { type: 'miss' as const, templates: ['Stimulus not detected', 'Pattern missed', 'Signal below threshold', 'Detection failed'] },
     ]
 
     const addLog = () => {
@@ -40,19 +33,18 @@ export default function BehavioralConflictLog() {
         second: '2-digit'
       })
 
+      // Weighted random selection (more detections than misses)
       const rand = Math.random()
       let messageType: typeof messages[number]
       
       if (rand < 0.1) {
         messageType = messages[0] // status
       } else if (rand < 0.4) {
-        messageType = messages[1] // domination
-      } else if (rand < 0.6) {
-        messageType = messages[2] // adaptation
-      } else if (rand < 0.8) {
-        messageType = messages[3] // conflict
+        messageType = messages[1] // stimulus
+      } else if (rand < 0.85) {
+        messageType = messages[2] // detection
       } else {
-        messageType = messages[4] // balance
+        messageType = messages[3] // miss
       }
 
       const template = messageType.templates[
@@ -68,12 +60,15 @@ export default function BehavioralConflictLog() {
 
       setLogs(prev => {
         const updated = [...prev, newLog]
+        // Keep only last 50 logs
         return updated.slice(-50)
       })
     }
 
+    // Initial log
     addLog()
 
+    // Add logs every 2-5 seconds
     const interval = setInterval(() => {
       addLog()
     }, 2000 + Math.random() * 3000)
@@ -83,14 +78,12 @@ export default function BehavioralConflictLog() {
 
   const getLogColor = (type: LogEntry['type']) => {
     switch (type) {
-      case 'domination':
+      case 'stimulus':
         return 'text-lab-accent'
-      case 'adaptation':
+      case 'detection':
+        return 'text-lab-accent'
+      case 'miss':
         return 'text-lab-warning'
-      case 'conflict':
-        return 'text-red-500'
-      case 'balance':
-        return 'text-lab-text/70'
       case 'status':
         return 'text-lab-text/50'
       default:

@@ -1,13 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-
-interface LogEntry {
-  id: number
-  timestamp: string
-  message: string
-  type: 'sequence' | 'prediction' | 'correct' | 'incorrect' | 'status'
-}
+import type { LogEntry } from '@/types/patternPrediction'
 
 export default function PatternPredictionLog() {
   const [logs, setLogs] = useState<LogEntry[]>([])

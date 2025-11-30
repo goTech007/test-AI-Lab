@@ -1,14 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-
-interface LogEntry {
-  id: number
-  timestamp: string
-  message: string
-  type: 'stimulus' | 'reaction' | 'latency' | 'status'
-  reactionTime?: number
-}
+import type { LogEntry } from '@/types/reactionTime'
 
 export default function ReactionTimeLog() {
   const [logs, setLogs] = useState<LogEntry[]>([])

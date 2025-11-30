@@ -1,7 +1,7 @@
-import AttentionResponseLab from '@/components/AttentionResponseLab'
-import ReactionTimeChamber from '@/components/ReactionTimeChamber'
-import PatternPredictionRoom from '@/components/PatternPredictionRoom'
-import BehavioralConflictZone from '@/components/BehavioralConflictZone'
+import AttentionResponseLab from '@/components/AttentionResponseLabPage/AttentionResponseLab'
+import ReactionTimeChamber from '@/components/ReactionTimeChamberPage/ReactionTimeChamber'
+import PatternPredictionRoom from '@/components/PatternPredictionRoomPage/PatternPredictionRoom'
+import BehavioralConflictZone from '@/components/BehavioralConflictZonePage/BehavioralConflictZone'
 
 export default function Home() {
   return (
@@ -20,7 +20,7 @@ export default function Home() {
           <AttentionResponseLab />
           <ReactionTimeChamber />
           <PatternPredictionRoom />
-          {/* <BehavioralConflictZone /> */}
+          <BehavioralConflictZone />
         </div>
       </div>
     </main>

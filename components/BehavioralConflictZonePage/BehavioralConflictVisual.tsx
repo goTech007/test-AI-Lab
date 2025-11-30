@@ -1,13 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-
-interface ConflictState {
-  modelAPower: number
-  modelBPower: number
-  dominance: 'A' | 'B' | 'balanced'
-  timestamp: number
-}
+import type { ConflictState } from '@/types/behavioralConflict'
 
 export default function BehavioralConflictVisual() {
   const [modelAPower, setModelAPower] = useState(50)

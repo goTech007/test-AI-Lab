@@ -1,13 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-
-interface SequenceElement {
-  id: number
-  value: string
-  predicted: boolean
-  correct: boolean | null
-}
+import type { SequenceElement } from '@/types/patternPrediction'
 
 export default function PatternPredictionVisual() {
   const [sequence, setSequence] = useState<SequenceElement[]>([])

@@ -1,15 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-
-interface Stimulus {
-  id: number
-  x: number
-  y: number
-  type: 'pattern' | 'signal'
-  detected: boolean
-  timestamp: number
-}
+import type { Stimulus } from '@/types/attentionResponse'
 
 export default function ExperimentVisual() {
   const [stimuli, setStimuli] = useState<Stimulus[]>([])

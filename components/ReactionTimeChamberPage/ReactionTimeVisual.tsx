@@ -1,13 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-
-interface Stimulus {
-  id: number
-  timestamp: number
-  reactionTime: number | null
-  responded: boolean
-}
+import type { Stimulus } from '@/types/reactionTime'
 
 export default function ReactionTimeVisual() {
   const [stimuli, setStimuli] = useState<Stimulus[]>([])
