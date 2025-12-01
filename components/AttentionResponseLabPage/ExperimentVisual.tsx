@@ -1,72 +1,9 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import type { Stimulus } from '@/types/attentionResponse'
+import { useAttentionResponse } from '@/hooks/useAttentionResponse'
 
 export default function ExperimentVisual() {
-  const [stimuli, setStimuli] = useState<Stimulus[]>([])
-  const [modelAStatus, setModelAStatus] = useState<'idle' | 'generating'>('idle')
-  const [modelBStatus, setModelBStatus] = useState<'idle' | 'detecting' | 'detected'>('idle')
-  const [detectionRate, setDetectionRate] = useState(0)
-  const stimulusIdRef = useRef(0)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // Model A generates a stimulus
-      setModelAStatus('generating')
-      
-      setTimeout(() => {
-        const newStimulus: Stimulus = {
-          id: stimulusIdRef.current++,
-          x: Math.random() * 80 + 10, // 10-90%
-          y: Math.random() * 80 + 10,
-          type: Math.random() > 0.5 ? 'pattern' : 'signal',
-          detected: false,
-          timestamp: Date.now(),
-        }
-        
-        setStimuli(prev => [...prev, newStimulus])
-        setModelAStatus('idle')
-        
-        // Model B attempts to detect
-        setModelBStatus('detecting')
-        
-        setTimeout(() => {
-          const willDetect = Math.random() > 0.3 // 70% detection rate
-          if (willDetect) {
-            setStimuli(prev => 
-              prev.map(s => 
-                s.id === newStimulus.id ? { ...s, detected: true } : s
-              )
-            )
-            setModelBStatus('detected')
-            setTimeout(() => setModelBStatus('idle'), 500)
-          } else {
-            setModelBStatus('idle')
-          }
-          
-          // Update detection rate
-          setDetectionRate(prev => {
-            const total = stimuli.length + 1
-            const detected = stimuli.filter(s => s.detected).length + (willDetect ? 1 : 0)
-            return Math.round((detected / total) * 100)
-          })
-        }, 800 + Math.random() * 1200) // Detection delay
-      }, 300)
-    }, 3000 + Math.random() * 2000) // Generate every 3-5 seconds
-
-    return () => clearInterval(interval)
-  }, [stimuli.length])
-
-  // Remove old stimuli after 8 seconds
-  useEffect(() => {
-    const cleanup = setInterval(() => {
-      setStimuli(prev => 
-        prev.filter(s => Date.now() - s.timestamp < 8000)
-      )
-    }, 1000)
-    return () => clearInterval(cleanup)
-  }, [])
+  const { stimuli, modelAStatus, modelBStatus, detectionRate } = useAttentionResponse()
 
   return (
     <div className="lab-border rounded-lg p-6 bg-lab-bg h-[400px] relative overflow-hidden">

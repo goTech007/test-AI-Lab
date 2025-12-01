@@ -1,76 +1,9 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import type { Stimulus } from '@/types/reactionTime'
+import { useReactionTime } from '@/hooks/useReactionTime'
 
 export default function ReactionTimeVisual() {
-  const [stimuli, setStimuli] = useState<Stimulus[]>([])
-  const [modelAStatus, setModelAStatus] = useState<'idle' | 'emitting'>('idle')
-  const [modelBStatus, setModelBStatus] = useState<'idle' | 'reacting'>('idle')
-  const [currentStimulus, setCurrentStimulus] = useState<Stimulus | null>(null)
-  const [averageReactionTime, setAverageReactionTime] = useState(0)
-  const stimulusIdRef = useRef(0)
-  const reactionStartRef = useRef<number | null>(null)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // Model A emits a stimulus
-      setModelAStatus('emitting')
-      
-      setTimeout(() => {
-        const newStimulus: Stimulus = {
-          id: stimulusIdRef.current++,
-          timestamp: Date.now(),
-          reactionTime: null,
-          responded: false,
-        }
-        
-        setCurrentStimulus(newStimulus)
-        setStimuli(prev => [...prev, newStimulus])
-        setModelAStatus('idle')
-        reactionStartRef.current = Date.now()
-        
-        // Model B reacts after a delay (simulating reaction time)
-        const reactionDelay = 200 + Math.random() * 800 // 200-1000ms
-        setModelBStatus('reacting')
-        
-        setTimeout(() => {
-          const reactionTime = Date.now() - (reactionStartRef.current || Date.now())
-          setStimuli(prev => 
-            prev.map(s => 
-              s.id === newStimulus.id 
-                ? { ...s, reactionTime, responded: true } 
-                : s
-            )
-          )
-          setCurrentStimulus(null)
-          setModelBStatus('idle')
-          
-          // Update average
-          setAverageReactionTime(prev => {
-            const allTimes = [...stimuli, { ...newStimulus, reactionTime, responded: true }]
-              .filter(s => s.reactionTime !== null)
-              .map(s => s.reactionTime!)
-            return allTimes.length > 0 
-              ? Math.round(allTimes.reduce((a, b) => a + b, 0) / allTimes.length)
-              : reactionTime
-          })
-        }, reactionDelay)
-      }, 300)
-    }, 4000 + Math.random() * 2000) // Emit every 4-6 seconds
-
-    return () => clearInterval(interval)
-  }, [stimuli.length])
-
-  // Cleanup old stimuli
-  useEffect(() => {
-    const cleanup = setInterval(() => {
-      setStimuli(prev => 
-        prev.filter(s => Date.now() - s.timestamp < 10000)
-      )
-    }, 1000)
-    return () => clearInterval(cleanup)
-  }, [])
+  const { stimuli, modelAStatus, modelBStatus, currentStimulus, averageReactionTime } = useReactionTime()
 
   return (
     <div className="lab-border rounded-lg p-6 bg-lab-bg h-[400px] relative overflow-hidden">
