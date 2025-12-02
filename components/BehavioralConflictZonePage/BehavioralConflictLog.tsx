@@ -3,8 +3,12 @@
 import { useBehavioralConflictLog } from '@/hooks/useBehavioralConflictLog'
 import { getBehavioralConflictLogColor } from '@/lib/behavioralConflictLog/getBehavioralConflictLogColor'
 
-export default function BehavioralConflictLog() {
-  const { logs, logEndRef } = useBehavioralConflictLog()
+interface BehavioralConflictLogProps {
+  isFocused: boolean
+}
+
+export default function BehavioralConflictLog({ isFocused }: BehavioralConflictLogProps) {
+  const { logs, logEndRef, scrollContainerRef } = useBehavioralConflictLog(isFocused)
 
   return (
     <div className="lab-border rounded-lg p-4 bg-lab-bg h-[400px] flex flex-col">
@@ -14,7 +18,7 @@ export default function BehavioralConflictLog() {
         </h3>
       </div>
       
-      <div className="flex-1 overflow-y-auto space-y-1 text-xs font-mono">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto space-y-1 text-xs font-mono">
         {logs.map((log) => (
           <div key={log.id} className="leading-relaxed">
             <span className="text-lab-text/40">[{log.timestamp}]</span>{' '}

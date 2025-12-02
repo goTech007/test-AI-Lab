@@ -3,8 +3,12 @@
 import { usePatternPredictionLog } from '@/hooks/usePatternPredictionLog'
 import { getPatternPredictionLogColor } from '@/lib/patternPredictionLog/getPatternPredictionLogColor'
 
-export default function PatternPredictionLog() {
-  const { logs, logEndRef } = usePatternPredictionLog()
+interface PatternPredictionLogProps {
+  isFocused: boolean
+}
+
+export default function PatternPredictionLog({ isFocused }: PatternPredictionLogProps) {
+  const { logs, logEndRef, scrollContainerRef } = usePatternPredictionLog(isFocused)
 
   return (
     <div className="lab-border rounded-lg p-4 bg-lab-bg h-[400px] flex flex-col">
@@ -14,7 +18,7 @@ export default function PatternPredictionLog() {
         </h3>
       </div>
       
-      <div className="flex-1 overflow-y-auto space-y-1 text-xs font-mono">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto space-y-1 text-xs font-mono">
         {logs.map((log) => (
           <div key={log.id} className="leading-relaxed">
             <span className="text-lab-text/40">[{log.timestamp}]</span>{' '}

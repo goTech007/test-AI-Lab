@@ -1,9 +1,14 @@
+'use client'
+
+import { useRoomFocus } from '@/hooks/useRoomFocus'
 import AttentionResponseLab from '@/components/AttentionResponseLabPage/AttentionResponseLab'
 import ReactionTimeChamber from '@/components/ReactionTimeChamberPage/ReactionTimeChamber'
 import PatternPredictionRoom from '@/components/PatternPredictionRoomPage/PatternPredictionRoom'
 import BehavioralConflictZone from '@/components/BehavioralConflictZonePage/BehavioralConflictZone'
 
 export default function Home() {
+  const { focusedRoom, setFocusedRoom } = useRoomFocus('attention')
+
   return (
     <main className="min-h-screen p-8">
       <div className="max-w-[1440px] mx-auto">
@@ -35,10 +40,30 @@ export default function Home() {
         </header>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <AttentionResponseLab />
-          <ReactionTimeChamber />
-          <PatternPredictionRoom />
-          <BehavioralConflictZone />
+          <div id="room-attention">
+            <AttentionResponseLab 
+              isFocused={focusedRoom === 'attention'}
+              onFocus={() => setFocusedRoom('attention')}
+            />
+          </div>
+          <div id="room-reaction">
+            <ReactionTimeChamber 
+              isFocused={focusedRoom === 'reaction'}
+              onFocus={() => setFocusedRoom('reaction')}
+            />
+          </div>
+          <div id="room-pattern">
+            <PatternPredictionRoom 
+              isFocused={focusedRoom === 'pattern'}
+              onFocus={() => setFocusedRoom('pattern')}
+            />
+          </div>
+          <div id="room-conflict">
+            <BehavioralConflictZone 
+              isFocused={focusedRoom === 'conflict'}
+              onFocus={() => setFocusedRoom('conflict')}
+            />
+          </div>
         </div>
       </div>
     </main>

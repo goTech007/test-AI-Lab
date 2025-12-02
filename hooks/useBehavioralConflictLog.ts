@@ -4,18 +4,17 @@ import { useState, useEffect, useRef } from 'react'
 import type { LogEntry } from '@/types/behavioralConflict'
 import { generateBehavioralConflictLogMessage } from '@/lib/behavioralConflictLog/generateBehavioralConflictLogMessage'
 
-export const useBehavioralConflictLog = () => {
+export const useBehavioralConflictLog = (isFocused: boolean = false) => {
   const [logs, setLogs] = useState<LogEntry[]>([])
   const logIdRef = useRef(0)
   const logEndRef = useRef<HTMLDivElement>(null)
-
-  const scrollToBottom = () => {
-    logEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    scrollToBottom()
-  }, [logs])
+    if (scrollContainerRef.current && isFocused) {
+      scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight
+    }
+  }, [logs, isFocused])
 
   useEffect(() => {
     const messages = [
@@ -48,6 +47,7 @@ export const useBehavioralConflictLog = () => {
   return {
     logs,
     logEndRef,
+    scrollContainerRef,
   }
 }
 
