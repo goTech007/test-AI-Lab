@@ -7,6 +7,7 @@ import { getInfluenceVisualEffect } from '@/lib/crossRoomInfluence/getInfluenceV
 import { getAnomalyVisualEffect } from '@/lib/anomaly/getAnomalyVisualEffect'
 import InfluenceIndicator from './InfluenceIndicator'
 import AnomalyIndicator from './AnomalyIndicator'
+import NeuralMapProjection from '@/components/ui/NeuralMapProjection'
 
 export default function BehavioralConflictVisual() {
   const { modelAPower, modelBPower, modelAStatus, modelBStatus, currentDominance } = useBehavioralConflict()
@@ -140,6 +141,16 @@ export default function BehavioralConflictVisual() {
         <div className="text-xs text-lab-text/50 text-center">
           Status: {currentDominance === 'A' ? 'Model A Dominating' : currentDominance === 'B' ? 'Model B Dominating' : 'Balanced Conflict'}
         </div>
+      </div>
+
+      {/* Neural Map Projection */}
+      <div className="absolute bottom-4 right-4 lab-border rounded p-2 bg-lab-bg/80 backdrop-blur-sm">
+        <NeuralMapProjection 
+          nodeCount={10} 
+          width={180} 
+          height={120} 
+          activityTrigger={Math.round(modelAPower + modelBPower)}
+        />
       </div>
     </div>
   )

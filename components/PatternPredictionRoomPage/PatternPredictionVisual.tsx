@@ -7,6 +7,7 @@ import { getInfluenceVisualEffect } from '@/lib/crossRoomInfluence/getInfluenceV
 import { getAnomalyVisualEffect } from '@/lib/anomaly/getAnomalyVisualEffect'
 import InfluenceIndicator from './InfluenceIndicator'
 import AnomalyIndicator from './AnomalyIndicator'
+import NeuralMapProjection from '@/components/ui/NeuralMapProjection'
 
 export default function PatternPredictionVisual() {
   const { sequence, prediction, modelAStatus, modelBStatus, accuracy, currentPattern, patternComplexity } = usePatternPrediction()
@@ -144,6 +145,16 @@ export default function PatternPredictionVisual() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Neural Map Projection */}
+      <div className="absolute bottom-4 right-4 lab-border rounded p-2 bg-lab-bg/80 backdrop-blur-sm">
+        <NeuralMapProjection 
+          nodeCount={10} 
+          width={180} 
+          height={120} 
+          activityTrigger={sequence.length}
+        />
       </div>
     </div>
   )
