@@ -2,25 +2,36 @@
 
 import { usePatternPrediction } from '@/hooks/usePatternPrediction'
 import { useCrossRoomInfluence } from '@/hooks/useCrossRoomInfluence'
+import { usePatternAnomaly } from '@/hooks/usePatternAnomaly'
 import { getInfluenceVisualEffect } from '@/lib/crossRoomInfluence/getInfluenceVisualEffect'
+import { getAnomalyVisualEffect } from '@/lib/anomaly/getAnomalyVisualEffect'
 import InfluenceIndicator from './InfluenceIndicator'
+import AnomalyIndicator from './AnomalyIndicator'
 
 export default function PatternPredictionVisual() {
   const { sequence, prediction, modelAStatus, modelBStatus, accuracy, currentPattern } = usePatternPrediction()
   const { getInfluenceForRoom } = useCrossRoomInfluence()
+  const { activeAnomaly } = usePatternAnomaly()
   const influence = getInfluenceForRoom('pattern')
   const influenceEffect = getInfluenceVisualEffect(influence)
+  const anomalyEffect = getAnomalyVisualEffect(activeAnomaly)
+
+  const hasAnomaly = activeAnomaly !== null
 
   return (
     <div 
       className="lab-border rounded-lg p-6 bg-lab-bg h-[400px] relative overflow-hidden transition-all duration-500"
       style={{
-        borderColor: influenceEffect.borderColor,
-        boxShadow: influenceEffect.opacity > 0.1 
-          ? `0 0 20px ${influenceEffect.glowColor}, inset 0 0 20px ${influenceEffect.glowColor}` 
-          : undefined,
+        borderColor: hasAnomaly ? anomalyEffect.borderColor : influenceEffect.borderColor,
+        borderWidth: hasAnomaly ? '3px' : '1px',
+        boxShadow: hasAnomaly
+          ? `0 0 30px ${anomalyEffect.glowColor}, 0 0 60px ${anomalyEffect.flashColor}, inset 0 0 30px ${anomalyEffect.flashColor}` 
+          : (influenceEffect.opacity > 0.1
+            ? `0 0 20px ${influenceEffect.glowColor}, inset 0 0 20px ${influenceEffect.glowColor}` 
+            : undefined),
       }}
     >
+      <AnomalyIndicator />
       <InfluenceIndicator />
       {/* Model A - Sequence Generator */}
       <div className="absolute top-4 left-4">

@@ -2,25 +2,37 @@
 
 import { useAttentionResponse } from '@/hooks/useAttentionResponse'
 import { useCrossRoomInfluence } from '@/hooks/useCrossRoomInfluence'
+import { useAttentionAnomaly } from '@/hooks/useAttentionAnomaly'
 import { getInfluenceVisualEffect } from '@/lib/crossRoomInfluence/getInfluenceVisualEffect'
+import { getAnomalyVisualEffect } from '@/lib/anomaly/getAnomalyVisualEffect'
 import InfluenceIndicator from './InfluenceIndicator'
+import AnomalyIndicator from './AnomalyIndicator'
 
 export default function ExperimentVisual() {
   const { stimuli, modelAStatus, modelBStatus, detectionRate } = useAttentionResponse()
   const { getInfluenceForRoom } = useCrossRoomInfluence()
+  const { activeAnomaly } = useAttentionAnomaly()
   const influence = getInfluenceForRoom('attention')
   const influenceEffect = getInfluenceVisualEffect(influence)
+  const anomalyEffect = getAnomalyVisualEffect(activeAnomaly)
+
+  // Anomaly takes priority over influence
+  const hasAnomaly = activeAnomaly !== null
 
   return (
     <div 
       className="lab-border rounded-lg p-6 bg-lab-bg h-[400px] relative overflow-hidden transition-all duration-500"
       style={{
-        borderColor: influenceEffect.borderColor,
-        boxShadow: influenceEffect.opacity > 0.1 
-          ? `0 0 20px ${influenceEffect.glowColor}, inset 0 0 20px ${influenceEffect.glowColor}` 
-          : undefined,
+        borderColor: hasAnomaly ? anomalyEffect.borderColor : influenceEffect.borderColor,
+        borderWidth: hasAnomaly ? '3px' : '1px',
+        boxShadow: hasAnomaly
+          ? `0 0 30px ${anomalyEffect.glowColor}, 0 0 60px ${anomalyEffect.flashColor}, inset 0 0 30px ${anomalyEffect.flashColor}` 
+          : (influenceEffect.opacity > 0.1
+            ? `0 0 20px ${influenceEffect.glowColor}, inset 0 0 20px ${influenceEffect.glowColor}` 
+            : undefined),
       }}
     >
+      <AnomalyIndicator />
       <InfluenceIndicator />
       {/* Model A - Stimulus Generator */}
       <div className="absolute top-4 left-4">
