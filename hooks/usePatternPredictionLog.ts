@@ -32,17 +32,17 @@ export const usePatternPredictionLog = (isFocused: boolean = false) => {
 
   useEffect(() => {
     const messages = [
-      { type: 'status' as const, templates: ['Room initialized', 'Pattern recognition active', 'Prediction model loaded', 'Sequence analysis protocol active'] },
-      { type: 'calibration' as const, templates: ['Calibrating pattern recognition', 'Adjusting prediction thresholds', 'Recalibrating sequence analysis', 'Fine-tuning prediction confidence'] },
-      { type: 'threshold' as const, templates: ['Prediction threshold updated: 0.65', 'Confidence boundary adjusted: ±0.10', 'Pattern matching window modified', 'Sequence filter recalibrated'] },
-      { type: 'error' as const, templates: ['Pattern analysis error detected', 'Prediction processing instability', 'Recovery protocol initiated', 'Error corrected: pattern restored'] },
-      { type: 'performance' as const, templates: ['Performance metrics updated', 'Prediction accuracy: 72.3%', 'Pattern recognition efficiency: 85%', 'System performance optimal'] },
+      { type: 'status' as const, templates: ['Room initialized', 'Pattern recognition active', 'Prediction model loaded', 'Sequence analysis protocol active', 'Expanded cognitive test active'] },
+      { type: 'calibration' as const, templates: ['Calibrating pattern recognition', 'Adjusting prediction thresholds', 'Recalibrating sequence analysis', 'Fine-tuning prediction confidence', 'Noise filter calibrated', 'False signal detection active'] },
+      { type: 'threshold' as const, templates: ['Prediction threshold updated: 0.65', 'Confidence boundary adjusted: ±0.10', 'Pattern matching window modified', 'Sequence filter recalibrated', 'Noise threshold set', 'False signal filter activated'] },
+      { type: 'error' as const, templates: ['Pattern analysis error detected', 'Prediction processing instability', 'Recovery protocol initiated', 'Error corrected: pattern restored', 'Noise interference detected', 'False signal pattern identified'] },
+      { type: 'performance' as const, templates: ['Performance metrics updated', 'Prediction accuracy: 72.3%', 'Pattern recognition efficiency: 85%', 'System performance optimal', 'Complex pattern analysis: active', 'Cycle detection: enabled'] },
       { type: 'metric' as const, templates: ['Behavioral metrics calculated', 'Stability analysis complete', 'Variability assessment finished', 'Reactivity index updated'] },
-      { type: 'confidence' as const, templates: ['Confidence level: 78%', 'Prediction confidence: high', 'Low confidence prediction', 'Confidence threshold met'] },
-      { type: 'sequence' as const, templates: ['Sequence element generated', 'Pattern extended', 'New element added', 'Sequence progression detected', 'Pattern sequence updated'] },
-      { type: 'prediction' as const, templates: ['Model B: prediction made', 'Next element predicted', 'Pattern analysis complete', 'Prediction generated', 'Pattern hypothesis formed'] },
-      { type: 'correct' as const, templates: ['Prediction correct', 'Pattern matched', 'Successful prediction', 'Accurate prediction confirmed', 'Pattern recognition successful'] },
-      { type: 'incorrect' as const, templates: ['Prediction incorrect', 'Pattern mismatch', 'Prediction failed', 'Pattern recognition failed', 'Incorrect prediction logged'] },
+      { type: 'confidence' as const, templates: ['Confidence level: 78%', 'Prediction confidence: high', 'Low confidence prediction', 'Confidence threshold met', 'Noise interference: confidence reduced', 'False signal detected: adjusting confidence'] },
+      { type: 'sequence' as const, templates: ['Sequence element generated', 'Pattern extended', 'New element added', 'Sequence progression detected', 'Pattern sequence updated', 'Noise element detected in sequence', 'False signal pattern identified', 'Cycle pattern recognized', 'Complex pattern sequence generated'] },
+      { type: 'prediction' as const, templates: ['Model B: prediction made', 'Next element predicted', 'Pattern analysis complete', 'Prediction generated', 'Pattern hypothesis formed', 'Predicting through noise interference', 'Analyzing complex pattern cycle'] },
+      { type: 'correct' as const, templates: ['Prediction correct', 'Pattern matched', 'Successful prediction', 'Accurate prediction confirmed', 'Pattern recognition successful', 'Correct prediction despite noise', 'Pattern cycle correctly identified'] },
+      { type: 'incorrect' as const, templates: ['Prediction incorrect', 'Pattern mismatch', 'Prediction failed', 'Pattern recognition failed', 'Incorrect prediction logged', 'Noise interference caused prediction error', 'False signal misled prediction'] },
     ]
 
     const addLog = () => {

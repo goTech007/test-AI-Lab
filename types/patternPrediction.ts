@@ -3,6 +3,9 @@ export interface SequenceElement {
   value: string
   predicted: boolean
   correct: boolean | null
+  isNoise?: boolean // Random interference
+  isFalseSignal?: boolean // Decoy pattern
+  cycleIndex?: number // Position in cycle
 }
 
 export interface LogEntry {

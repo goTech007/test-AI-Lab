@@ -9,7 +9,7 @@ import InfluenceIndicator from './InfluenceIndicator'
 import AnomalyIndicator from './AnomalyIndicator'
 
 export default function PatternPredictionVisual() {
-  const { sequence, prediction, modelAStatus, modelBStatus, accuracy, currentPattern } = usePatternPrediction()
+  const { sequence, prediction, modelAStatus, modelBStatus, accuracy, currentPattern, patternComplexity } = usePatternPrediction()
   const { getInfluenceForRoom } = useCrossRoomInfluence()
   const { activeAnomaly } = usePatternAnomaly()
   const influence = getInfluenceForRoom('pattern')
@@ -73,8 +73,12 @@ export default function PatternPredictionVisual() {
               className="flex flex-col items-center gap-2"
             >
               <div
-                className={`w-12 h-12 rounded-lg border-2 flex items-center justify-center font-mono text-lg transition-all ${
-                  element.predicted
+                className={`w-12 h-12 rounded-lg border-2 flex items-center justify-center font-mono text-lg transition-all relative ${
+                  element.isNoise
+                    ? 'border-lab-warning bg-lab-warning/10 border-dashed'
+                    : element.isFalseSignal
+                    ? 'border-lab-orange bg-lab-orange/10 border-dotted'
+                    : element.predicted
                     ? element.correct
                       ? 'border-lab-accent bg-lab-accent/20 lab-glow'
                       : 'border-red-500 bg-red-500/20'
@@ -82,6 +86,16 @@ export default function PatternPredictionVisual() {
                 }`}
               >
                 {element.value}
+                {element.isNoise && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-lab-warning rounded-full text-[8px] flex items-center justify-center" title="Noise">
+                    N
+                  </div>
+                )}
+                {element.isFalseSignal && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-lab-orange rounded-full text-[8px] flex items-center justify-center" title="False Signal">
+                    F
+                  </div>
+                )}
               </div>
               {element.predicted && (
                 <div className={`text-xs ${
@@ -107,8 +121,28 @@ export default function PatternPredictionVisual() {
 
       {/* Pattern Indicator */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-        <div className="text-xs text-lab-text/50 text-center">
-          Pattern: {currentPattern.join(' → ')}
+        <div className="text-xs text-lab-text/50 text-center space-y-1">
+          <div>
+            Pattern: {currentPattern.join(' → ')}
+            {patternComplexity && (
+              <span className="ml-2 text-lab-text/40">
+                (Cycle: {patternComplexity.cycleLength})
+              </span>
+            )}
+          </div>
+          {patternComplexity && (
+            <div className="flex items-center justify-center gap-3 text-[10px]">
+              {patternComplexity.hasNoise && (
+                <span className="text-lab-warning">⚡ Noise: {Math.round(patternComplexity.noiseProbability * 100)}%</span>
+              )}
+              {patternComplexity.hasFalseSignals && (
+                <span className="text-lab-orange">⚠ False Signals: {Math.round(patternComplexity.falseSignalProbability * 100)}%</span>
+              )}
+              {!patternComplexity.hasNoise && !patternComplexity.hasFalseSignals && (
+                <span className="text-lab-accent">✓ Simple Pattern</span>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

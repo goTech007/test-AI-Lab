@@ -3,17 +3,11 @@
 import { useState, useEffect, useRef } from 'react'
 import type { SequenceElement } from '@/types/patternPrediction'
 import { generateSequenceElement } from '@/lib/patternPrediction/generateSequenceElement'
-import { getNextPatternValue } from '@/lib/patternPrediction/getNextPatternValue'
+import { getNextPatternValueComplex } from '@/lib/patternPrediction/getNextPatternValueComplex'
 import { calculateAccuracy } from '@/lib/patternPrediction/calculateAccuracy'
 import { limitSequenceLength } from '@/lib/patternPrediction/limitSequenceLength'
 import { generatePrediction } from '@/lib/patternPrediction/generatePrediction'
-
-const PATTERNS = [
-  ['A', 'B', 'C', 'A', 'B', 'C'],
-  ['1', '2', '3', '1', '2', '3'],
-  ['X', 'Y', 'Z', 'X', 'Y', 'Z'],
-  ['α', 'β', 'γ', 'α', 'β', 'γ'],
-]
+import { generateComplexPattern, type ComplexPattern } from '@/lib/patternPrediction/generateComplexPattern'
 
 export const usePatternPrediction = () => {
   const [sequence, setSequence] = useState<SequenceElement[]>([])
@@ -22,7 +16,7 @@ export const usePatternPrediction = () => {
   const [modelBStatus, setModelBStatus] = useState<'idle' | 'predicting' | 'correct' | 'incorrect'>('idle')
   const [accuracy, setAccuracy] = useState(0)
   const elementIdRef = useRef(0)
-  const [currentPattern, setCurrentPattern] = useState<string[]>(PATTERNS[0])
+  const [currentPattern, setCurrentPattern] = useState<ComplexPattern>(generateComplexPattern())
   const [patternIndex, setPatternIndex] = useState(0)
 
   useEffect(() => {
@@ -31,26 +25,48 @@ export const usePatternPrediction = () => {
       setModelAStatus('generating')
       
       setTimeout(() => {
-        const nextValue = getNextPatternValue(currentPattern, patternIndex)
-        const newElement = generateSequenceElement(elementIdRef.current++, nextValue)
+        const nextResult = getNextPatternValueComplex(currentPattern, patternIndex)
+        const newElement = generateSequenceElement(
+          elementIdRef.current++,
+          nextResult.value,
+          {
+            isNoise: nextResult.isNoise,
+            isFalseSignal: nextResult.isFalseSignal,
+            cycleIndex: nextResult.cycleIndex,
+          }
+        )
         
         setSequence(prev => [...prev, newElement])
         setPatternIndex(prev => prev + 1)
         setModelAStatus('idle')
         
-        // Model B attempts to predict
+        // Model B attempts to predict (harder with noise and false signals)
         setModelBStatus('predicting')
         
         setTimeout(() => {
-          // Prediction logic: sometimes correct, sometimes wrong
-          const willPredictCorrectly = Math.random() > 0.25 // 75% accuracy
-          const predictedValue = generatePrediction(currentPattern, patternIndex, willPredictCorrectly)
+          // Prediction accuracy reduced by complexity
+          const complexityPenalty = (currentPattern.hasNoise ? 0.15 : 0) + 
+                                    (currentPattern.hasFalseSignals ? 0.2 : 0)
+          const baseAccuracy = 0.75
+          const adjustedAccuracy = baseAccuracy - complexityPenalty
+          const willPredictCorrectly = Math.random() > (1 - adjustedAccuracy)
+          
+          // Get the actual next value from base pattern (what should come next)
+          const actualNextBase = currentPattern.basePattern[(patternIndex + 1) % currentPattern.cycleLength]
+          const predictedValue = generatePrediction(currentPattern.basePattern, patternIndex, willPredictCorrectly)
           
           setPrediction(predictedValue)
           
           setTimeout(() => {
-            const actualNext = getNextPatternValue(currentPattern, patternIndex + 1)
-            const isCorrect = predictedValue === actualNext
+            // Get what actually comes next (may be noise/false signal)
+            const nextNextResult = getNextPatternValueComplex(currentPattern, patternIndex + 1)
+            const actualNext = nextNextResult.value
+            
+            // Prediction is correct if:
+            // 1. Predicted value matches the base pattern next value
+            // 2. The actual next value is not noise or false signal (or if it is, prediction still matches base)
+            const isCorrect = predictedValue === actualNextBase && 
+                             (actualNext === actualNextBase || predictedValue === actualNext)
             
             setSequence(prevSequence => {
               const updated = prevSequence.map(s => 
@@ -74,10 +90,10 @@ export const usePatternPrediction = () => {
     return () => clearInterval(interval)
   }, [sequence.length, patternIndex, currentPattern])
 
-  // Change pattern occasionally
+  // Change pattern occasionally (with complexity upgrade)
   useEffect(() => {
     const patternChange = setInterval(() => {
-      const newPattern = PATTERNS[Math.floor(Math.random() * PATTERNS.length)]
+      const newPattern = generateComplexPattern()
       setCurrentPattern(newPattern)
       setSequence([])
       setPatternIndex(0)
@@ -97,7 +113,8 @@ export const usePatternPrediction = () => {
     modelAStatus,
     modelBStatus,
     accuracy,
-    currentPattern,
+    currentPattern: currentPattern.basePattern,
+    patternComplexity: currentPattern,
   }
 }
 
