@@ -86,10 +86,14 @@ export const useReactionTimeLog = (isFocused: boolean = false) => {
     return () => clearInterval(interval)
   }, [])
 
+  // Calculate current metrics
+  const currentMetrics = calculateBehavioralMetrics(metricsHistoryRef.current)
+
   return {
     logs,
     logEndRef,
     scrollContainerRef,
+    metrics: currentMetrics,
   }
 }
 

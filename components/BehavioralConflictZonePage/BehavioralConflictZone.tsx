@@ -2,6 +2,7 @@
 
 import BehavioralConflictVisual from './BehavioralConflictVisual'
 import BehavioralConflictLog from './BehavioralConflictLog'
+import BehavioralMetricsPanel from './BehavioralMetricsPanel'
 
 interface BehavioralConflictZoneProps {
   isFocused: boolean
@@ -35,7 +36,8 @@ export default function BehavioralConflictZone({ isFocused, onFocus }: Behaviora
         <div className="lg:col-span-2">
           <BehavioralConflictVisual />
         </div>
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 space-y-6">
+          <BehavioralMetricsPanel />
           <BehavioralConflictLog isFocused={isFocused} />
         </div>
       </div>

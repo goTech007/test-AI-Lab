@@ -2,6 +2,7 @@
 
 import PatternPredictionVisual from './PatternPredictionVisual'
 import PatternPredictionLog from './PatternPredictionLog'
+import BehavioralMetricsPanel from './BehavioralMetricsPanel'
 
 interface PatternPredictionRoomProps {
   isFocused: boolean
@@ -35,7 +36,8 @@ export default function PatternPredictionRoom({ isFocused, onFocus }: PatternPre
         <div className="lg:col-span-2">
           <PatternPredictionVisual />
         </div>
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 space-y-6">
+          <BehavioralMetricsPanel />
           <PatternPredictionLog isFocused={isFocused} />
         </div>
       </div>

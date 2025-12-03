@@ -2,6 +2,7 @@
 
 import ReactionTimeVisual from './ReactionTimeVisual'
 import ReactionTimeLog from './ReactionTimeLog'
+import BehavioralMetricsPanel from './BehavioralMetricsPanel'
 
 interface ReactionTimeChamberProps {
   isFocused: boolean
@@ -35,7 +36,8 @@ export default function ReactionTimeChamber({ isFocused, onFocus }: ReactionTime
         <div className="lg:col-span-2">
           <ReactionTimeVisual />
         </div>
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 space-y-6">
+          <BehavioralMetricsPanel />
           <ReactionTimeLog isFocused={isFocused} />
         </div>
       </div>
