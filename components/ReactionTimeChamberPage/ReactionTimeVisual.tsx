@@ -1,12 +1,27 @@
 'use client'
 
 import { useReactionTime } from '@/hooks/useReactionTime'
+import { useCrossRoomInfluence } from '@/hooks/useCrossRoomInfluence'
+import { getInfluenceVisualEffect } from '@/lib/crossRoomInfluence/getInfluenceVisualEffect'
+import InfluenceIndicator from './InfluenceIndicator'
 
 export default function ReactionTimeVisual() {
   const { stimuli, modelAStatus, modelBStatus, currentStimulus, averageReactionTime } = useReactionTime()
+  const { getInfluenceForRoom } = useCrossRoomInfluence()
+  const influence = getInfluenceForRoom('reaction')
+  const influenceEffect = getInfluenceVisualEffect(influence)
 
   return (
-    <div className="lab-border rounded-lg p-6 bg-lab-bg h-[400px] relative overflow-hidden">
+    <div 
+      className="lab-border rounded-lg p-6 bg-lab-bg h-[400px] relative overflow-hidden transition-all duration-500"
+      style={{
+        borderColor: influenceEffect.borderColor,
+        boxShadow: influenceEffect.opacity > 0.1 
+          ? `0 0 20px ${influenceEffect.glowColor}, inset 0 0 20px ${influenceEffect.glowColor}` 
+          : undefined,
+      }}
+    >
+      <InfluenceIndicator />
       {/* Model A - Stimulus Emitter */}
       <div className="absolute top-4 left-4">
         <div className="flex items-center gap-2 mb-2">

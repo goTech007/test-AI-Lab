@@ -1,12 +1,27 @@
 'use client'
 
 import { useBehavioralConflict } from '@/hooks/useBehavioralConflict'
+import { useCrossRoomInfluence } from '@/hooks/useCrossRoomInfluence'
+import { getInfluenceVisualEffect } from '@/lib/crossRoomInfluence/getInfluenceVisualEffect'
+import InfluenceIndicator from './InfluenceIndicator'
 
 export default function BehavioralConflictVisual() {
   const { modelAPower, modelBPower, modelAStatus, modelBStatus, currentDominance } = useBehavioralConflict()
+  const { getInfluenceForRoom } = useCrossRoomInfluence()
+  const influence = getInfluenceForRoom('conflict')
+  const influenceEffect = getInfluenceVisualEffect(influence)
 
   return (
-    <div className="lab-border rounded-lg p-6 bg-lab-bg h-[400px] relative overflow-hidden">
+    <div 
+      className="lab-border rounded-lg p-6 bg-lab-bg h-[400px] relative overflow-hidden transition-all duration-500"
+      style={{
+        borderColor: influenceEffect.borderColor,
+        boxShadow: influenceEffect.opacity > 0.1 
+          ? `0 0 20px ${influenceEffect.glowColor}, inset 0 0 20px ${influenceEffect.glowColor}` 
+          : undefined,
+      }}
+    >
+      <InfluenceIndicator />
       {/* Model A */}
       <div className="absolute top-4 left-4">
         <div className="flex items-center gap-2 mb-2">

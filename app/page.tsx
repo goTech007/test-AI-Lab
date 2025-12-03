@@ -1,6 +1,7 @@
 'use client'
 
 import { useRoomFocus } from '@/hooks/useRoomFocus'
+import { CrossRoomInfluenceProvider } from '@/lib/providers/CrossRoomInfluenceProvider'
 import AttentionResponseLab from '@/components/AttentionResponseLabPage/AttentionResponseLab'
 import ReactionTimeChamber from '@/components/ReactionTimeChamberPage/ReactionTimeChamber'
 import PatternPredictionRoom from '@/components/PatternPredictionRoomPage/PatternPredictionRoom'
@@ -10,8 +11,9 @@ export default function Home() {
   const { focusedRoom, setFocusedRoom } = useRoomFocus('attention')
 
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-[1440px] mx-auto">
+    <CrossRoomInfluenceProvider>
+      <main className="min-h-screen p-8">
+        <div className="max-w-[1440px] mx-auto">
         <header className="mb-8 pb-4 border-b border-lab-border flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-mono text-lab-accent mb-2">
@@ -66,7 +68,8 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </main>
+      </main>
+    </CrossRoomInfluenceProvider>
   )
 }
 
