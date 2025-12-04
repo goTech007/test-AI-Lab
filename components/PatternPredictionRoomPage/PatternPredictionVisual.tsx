@@ -124,7 +124,7 @@ export default function PatternPredictionVisual() {
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
         <div className="text-xs text-lab-text/50 text-center space-y-1">
           <div>
-            Pattern: {currentPattern.join(' → ')}
+            Pattern: {currentPattern.length > 0 ? currentPattern.join(' → ') : 'Initializing...'}
             {patternComplexity && (
               <span className="ml-2 text-lab-text/40">
                 (Cycle: {patternComplexity.cycleLength})

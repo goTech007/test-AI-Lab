@@ -16,10 +16,22 @@ export const usePatternPrediction = () => {
   const [modelBStatus, setModelBStatus] = useState<'idle' | 'predicting' | 'correct' | 'incorrect'>('idle')
   const [accuracy, setAccuracy] = useState(0)
   const elementIdRef = useRef(0)
-  const [currentPattern, setCurrentPattern] = useState<ComplexPattern>(generateComplexPattern())
+  // Use lazy initializer to only generate pattern on client side
+  const [currentPattern, setCurrentPattern] = useState<ComplexPattern | null>(null)
   const [patternIndex, setPatternIndex] = useState(0)
+  const initializedRef = useRef(false)
+
+  // Initialize pattern on client side only
+  useEffect(() => {
+    if (!initializedRef.current && typeof window !== 'undefined') {
+      setCurrentPattern(generateComplexPattern())
+      initializedRef.current = true
+    }
+  }, [])
 
   useEffect(() => {
+    if (!currentPattern) return
+
     const interval = setInterval(() => {
       // Model A generates next element in sequence
       setModelAStatus('generating')
@@ -113,7 +125,7 @@ export const usePatternPrediction = () => {
     modelAStatus,
     modelBStatus,
     accuracy,
-    currentPattern: currentPattern.basePattern,
+    currentPattern: currentPattern?.basePattern || [],
     patternComplexity: currentPattern,
   }
 }
