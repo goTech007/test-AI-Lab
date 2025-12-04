@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useNeuralMap } from '@/hooks/useNeuralMap'
 
 interface NeuralMapProjectionProps {
@@ -17,7 +18,23 @@ export default function NeuralMapProjection({
   className = '',
   activityTrigger,
 }: NeuralMapProjectionProps) {
+  const [isMounted, setIsMounted] = useState(false)
   const { nodes, connections } = useNeuralMap(nodeCount, activityTrigger)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  // Don't render until mounted (prevents hydration mismatch)
+  if (!isMounted || nodes.length === 0 || connections.length === 0) {
+    return (
+      <div className={`relative ${className}`} style={{ width, height }}>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-[8px] text-lab-text/20 font-mono">Initializing...</span>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={`relative ${className}`} style={{ width, height }}>

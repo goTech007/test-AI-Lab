@@ -9,23 +9,29 @@ import { propagateActivation } from '@/lib/neuralMap/propagateActivation'
 export const useNeuralMap = (nodeCount: number = 12, activityTrigger?: number) => {
   const [nodes, setNodes] = useState<NeuralNode[]>([])
   const [connections, setConnections] = useState<NeuralConnection[]>([])
+  const [isMounted, setIsMounted] = useState(false)
   const initializedRef = useRef(false)
   const lastActivityRef = useRef(0)
   const nodesRef = useRef<NeuralNode[]>([])
   const connectionsRef = useRef<NeuralConnection[]>([])
 
-  // Initialize nodes and connections
+  // Ensure client-side only rendering
   useEffect(() => {
-    if (!initializedRef.current) {
-      const initialNodes = generateNeuralNodes(nodeCount)
-      const initialConnections = generateNeuralConnections(initialNodes)
-      setNodes(initialNodes)
-      setConnections(initialConnections)
-      nodesRef.current = initialNodes
-      connectionsRef.current = initialConnections
-      initializedRef.current = true
-    }
-  }, [nodeCount])
+    setIsMounted(true)
+  }, [])
+
+  // Initialize nodes and connections (client-side only)
+  useEffect(() => {
+    if (!isMounted || initializedRef.current) return
+    
+    const initialNodes = generateNeuralNodes(nodeCount)
+    const initialConnections = generateNeuralConnections(initialNodes)
+    setNodes(initialNodes)
+    setConnections(initialConnections)
+    nodesRef.current = initialNodes
+    connectionsRef.current = initialConnections
+    initializedRef.current = true
+  }, [isMounted, nodeCount])
 
   // Update refs when state changes
   useEffect(() => {
