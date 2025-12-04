@@ -16,10 +16,21 @@ export const usePatternPrediction = () => {
   const [modelBStatus, setModelBStatus] = useState<'idle' | 'predicting' | 'correct' | 'incorrect'>('idle')
   const [accuracy, setAccuracy] = useState(0)
   const elementIdRef = useRef(0)
-  const [currentPattern, setCurrentPattern] = useState<ComplexPattern>(generateComplexPattern())
+  const [currentPattern, setCurrentPattern] = useState<ComplexPattern | null>(null)
   const [patternIndex, setPatternIndex] = useState(0)
+  const [isMounted, setIsMounted] = useState(false)
+
+  // Initialize on client side only
+  useEffect(() => {
+    setIsMounted(true)
+    if (!currentPattern) {
+      setCurrentPattern(generateComplexPattern())
+    }
+  }, [])
 
   useEffect(() => {
+    if (!currentPattern || !isMounted) return
+
     const interval = setInterval(() => {
       // Model A generates next element in sequence
       setModelAStatus('generating')
@@ -88,10 +99,12 @@ export const usePatternPrediction = () => {
     }, 3000 + Math.random() * 2000)
 
     return () => clearInterval(interval)
-  }, [sequence.length, patternIndex, currentPattern])
+  }, [sequence.length, patternIndex, currentPattern, isMounted])
 
   // Change pattern occasionally (with complexity upgrade)
   useEffect(() => {
+    if (!isMounted) return
+
     const patternChange = setInterval(() => {
       const newPattern = generateComplexPattern()
       setCurrentPattern(newPattern)
@@ -100,7 +113,7 @@ export const usePatternPrediction = () => {
     }, 30000) // Change every 30 seconds
 
     return () => clearInterval(patternChange)
-  }, [])
+  }, [isMounted])
 
   // Keep only last 8 elements
   useEffect(() => {
@@ -113,7 +126,7 @@ export const usePatternPrediction = () => {
     modelAStatus,
     modelBStatus,
     accuracy,
-    currentPattern: currentPattern.basePattern,
+    currentPattern: currentPattern?.basePattern || [],
     patternComplexity: currentPattern,
   }
 }
