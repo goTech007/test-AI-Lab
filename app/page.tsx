@@ -23,7 +23,7 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-4">
             <a
-              href="https://github.com/goTech007/test-AI-Lab"
+              href="https://github.com/Topten1004/AI-Lab"
               target="_blank"
               rel="noopener noreferrer"
               className="text-lab-text/70 hover:text-lab-accent transition-colors"
